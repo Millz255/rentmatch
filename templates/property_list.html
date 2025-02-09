@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="wrapper">
+    <main>
+        <div class="container mt-5">
+            <h1 class="text-center">Property List</h1>
+
+            <!-- Search and Filter Form -->
+            <form method="GET" action="{% url 'property_list' %}" class="mb-4">
+                <label for="location">Location:</label>
+                <input type="text" name="q" placeholder="Search by location or area" value="{{ query }}" class="form-control mb-2">
+
+                <!-- Filter by Price Range -->
+                <label for="min_price">Min Price:</label>
+                <input type="number" name="min_price" id="min_price" placeholder="50000" value="{{ min_price }}" class="form-control mb-2">
+
+                <label for="max_price">Max Price:</label>
+                <input type="number" name="max_price" id="max_price" placeholder="50000000" value="{{ max_price }}" class="form-control mb-2">
+
+                <!-- Currency Selection -->
+                <label for="currency">Currency:</label>
+                <select name="currency" class="form-control mb-2">
+                    <option value="TZS" {% if currency == 'TZS' %}selected{% endif %}>TZS</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+
+            <!-- Grid Layout for Property List -->
+            <div id="property-list" class="property-list">
+                {% for property in properties %}
+                <div class="property-card">
+                    <h2>{{ property.title }}</h2>
+                    <p>Price: {{ property.price }} {{ currency }}</p>
+                    <p>Location: {{ property.location }}</p>
+                    {% if property.images_list.first %}
+                        <img src="{{ property.images_list.first.image.url }}" alt="{{ property.title }}" class="property-image"/>
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    <div class="text-center mt-3">
+                        <a href="{% url 'property_detail' property.pk %}" class="btn btn-primary">View Details</a>
+                        <a href="{% url 'contact_seller' property.owner.pk %}" class="btn btn-success">Contact</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Function to adjust grid layout
+                    function adjustLayout() {
+                        const container = document.getElementById('property-list');
+                        const width = window.innerWidth;
+                        let columns = 3; // Default to 3 columns
+
+                        if (width < 600) {
+                            columns = 1; // 1 column for small screens
+                        } else if (width < 900) {
+                            columns = 2; // 2 columns for medium screens
+                        }
+
+                        container.style.display = 'grid';
+                        container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+                        container.style.gap = '15px'; // Adjust the gap for better spacing
+                        container.style.padding = '15px'; // Add padding for more space
+                    }
+
+                    // Initialize layout
+                    adjustLayout();
+
+                    // Adjust layout on window resize
+                    window.addEventListener('resize', adjustLayout);
+
+                    // Function to set thumbnail image and adjust size
+                    function setThumbnail() {
+                        const images = document.querySelectorAll('.property-image');
+
+                        images.forEach(image => {
+                            if (image.naturalHeight > 200) { // If image is too tall
+                                image.style.maxHeight = '200px';
+                                image.style.objectFit = 'cover'; // Ensure the image covers the container
+                            } else {
+                                image.style.maxHeight = ''; // Remove the style if image is small enough
+                            }
+                        });
+                    }
+
+                    // Initialize thumbnail settings
+                    setThumbnail();
+                });
+            </script>
+        </div>
+    </main>
+</div>
+{% endblock %}

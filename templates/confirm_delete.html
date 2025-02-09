@@ -1,0 +1,20 @@
+<!-- confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="form-container p-4 shadow-sm rounded bg-light">
+                <h1 class="text-center mb-4">Confirm Delete</h1>
+                <p>Are you sure you want to delete the property "{{ property.title }}"?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

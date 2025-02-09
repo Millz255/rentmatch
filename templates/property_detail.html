@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ property.title }}</h1>
+<p>Price: {{ property.price }}</p>
+<p>Location: {{ property.location }}</p>
+<p>Description: {{ property.description }}</p>
+
+<div class="text-center mt-3">
+    <a href="{% url 'contact_seller' property.owner.pk %}" class="btn btn-success">Contact</a>
+</div>
+
+<!-- Grid Layout for Property Images -->
+<div id="property-images">
+    {% for image in images %}
+        <div class="property-image-container">
+            <img src="{{ image.image.url }}" alt="{{ property.title }}" class="property-thumbnail"/>
+        </div>
+    {% empty %}
+        <p>No images available</p>
+    {% endfor %}
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <span id="close-btn" style="position: absolute; top: 10px; right: 10px; font-size: 2em; color: #fff; cursor: pointer;">&times;</span>
+    <span id="prev-btn" style="position: absolute; top: 50%; font-size: 2em; color: #fff; background: none; border: none; cursor: pointer; transform: translateY(-50%); left: 10px;">&lt;</span>
+    <div id="lightbox-content" style="max-width: 80%; max-height: 80%;"><img id="lightbox-image" src="" alt="Full size image" style="max-width: 100%; max-height: 100%; object-fit: contain;" /></div>
+    <span id="next-btn" style="position: absolute; top: 50%; font-size: 2em; color: #fff; background: none; border: none; cursor: pointer; transform: translateY(-50%); right: 10px;">&gt;</span>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function adjustImageGrid() {
+            const container = document.getElementById('property-images');
+            const width = window.innerWidth;
+            let columns = 3; // Default to 3 columns
+
+            if (width < 600) {
+                columns = 1; // 1 column for small screens
+            } else if (width < 900) {
+                columns = 2; // 2 columns for medium screens
+            }
+
+            container.style.display = 'grid';
+            container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            container.style.gap = '10px';
+            container.style.padding = '10px';
+        }
+
+        function setThumbnailStyles() {
+            const images = document.querySelectorAll('.property-thumbnail');
+            images.forEach(image => {
+                image.style.maxWidth = '100%';
+                image.style.height = 'auto';
+                image.style.cursor = 'pointer'; // Indicate the image is clickable
+            });
+        }
+
+        function openLightbox(imageSrc) {
+            var lightbox = document.getElementById('lightbox');
+            var lightboxImage = document.getElementById('lightbox-image');
+            lightboxImage.src = imageSrc;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        function handleImageClick(event) {
+            if (event.target.classList.contains('property-thumbnail')) {
+                openLightbox(event.target.src);
+            }
+        }
+
+        function navigateLightbox(direction) {
+            const images = document.querySelectorAll('.property-thumbnail');
+            const currentSrc = document.getElementById('lightbox-image').src;
+            let currentIndex = Array.from(images).findIndex(img => img.src === currentSrc);
+            let nextIndex = (currentIndex + direction + images.length) % images.length;
+            openLightbox(images[nextIndex].src);
+        }
+
+        // Ensure lightbox is hidden initially
+        document.getElementById('lightbox').style.display = 'none';
+
+        adjustImageGrid();
+        window.addEventListener('resize', adjustImageGrid);
+        setThumbnailStyles();
+        document.getElementById('property-images').addEventListener('click', handleImageClick);
+        document.getElementById('close-btn').addEventListener('click', closeLightbox);
+        document.getElementById('prev-btn').addEventListener('click', function () {
+            navigateLightbox(-1);
+        });
+        document.getElementById('next-btn').addEventListener('click', function () {
+            navigateLightbox(1);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RentMatch{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Ensure the body and html take up full height */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main container should take up remaining space */
+        .container {
+            flex: 1;
+            padding-bottom: 60px; /* Adjust this based on footer height */
+        }
+
+        /* Footer should stay at the bottom */
+        .footer {
+            background-color: #00246B; /* Footer background color */
+            color: white; /* Text color */
+            text-align: center;
+            padding: 15px 0; /* Footer padding */
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #00246B;">
+    <a class="navbar-brand" href="{% url 'property_list' %}">RentMatch</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'property_list' %}">Properties</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_property' %}">Add Property</a>
+            </li>
+            <!-- Add more nav items here -->
+        </ul>
+        <ul class="navbar-nav ml-auto">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notifications
+            <span class="badge badge-danger">{{ unread_notifications_count }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationsDropdown">
+            {% if unread_notifications_count > 0 %}
+                {% for notification in unread_notifications %}
+                    <a class="dropdown-item" href="{% url 'mark_notification_as_read' notification.id %}">
+                        {{ notification.message }} - {{ notification.timestamp|date:"Y-m-d H:i" }}
+                    </a>
+                {% endfor %}
+            {% else %}
+                <a class="dropdown-item" href="#">No new notifications</a>
+            {% endif %}
+        </div>
+    </li>
+</ul>
+
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-light mr-2" href="{% url 'profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" href="{% url 'account_logout' %}">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'account_login' %}">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+    <!-- Main content -->
+    <div class="container mt-4">
+        {% block content %}
+        <!-- Page-specific content will be inserted here -->
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 RentMatch. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'js/footer.js' %}" defer></script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

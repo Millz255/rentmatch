@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Edit Profile</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Profile Photo Upload -->
+            <div class="form-group">
+                <label for="id_profile_photo">Profile Photo</label>
+                <input type="file" name="profile_photo" id="id_profile_photo" class="form-control-file">
+                {% if form.instance.profile_photo %}
+                    <img src="{{ form.instance.profile_photo.url }}" alt="Current Profile Photo" class="img-thumbnail rounded-circle" style="width: 100px; height: 100px;">
+                {% endif %}
+            </div>
+
+            <!-- Personal Information Fields -->
+            <div class="form-group">
+                <label for="id_first_name">First Name</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_name">Last Name</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_phone">Phone Number</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_address">Address</label>
+                {{ form.address }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_country">Country</label>
+                {{ form.country }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_city">City/Town</label>
+                {{ form.city }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_dob">Date of Birth</label>
+                {{ form.dob }}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+
+        <a href="{% url 'profile' %}" class="btn btn-secondary mt-3">Back to Profile</a>
+    </div>
+{% endblock %}

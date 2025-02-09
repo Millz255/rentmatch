@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-container p-4 shadow-sm rounded bg-light">
+                <h1 class="text-center mb-4">Add Property</h1>
+
+                <form method="post" enctype="multipart/form-data" action="{% url 'add_property' %}">
+                    {% csrf_token %}
+
+                    <!-- Property Form Fields -->
+                    <div class="form-group">
+                        {{ form.as_p }}
+                    </div>
+
+                    <!-- Image Upload Formset -->
+                    <div class="form-group">
+                        <label for="id_images">Upload Images:</label>
+                        {{ image_formset.management_form }}  <!-- Important for handling formsets -->
+                        {% for form in image_formset %}
+                            {{ form.as_p }}
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Add Property</button>
+                </form>
+
+                {% if form.errors or image_formset.errors %}
+                    <div class="errors mt-3">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            <!-- Display image formset errors -->
+                            {% for error in image_formset.non_form_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,170 @@
+/* Ensure full height for body and html */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Flexbox setup for body to push footer to the bottom */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+}
+
+main {
+    flex: 1; /* Main content grows to fill the remaining space */
+}
+
+/* Wrapper to contain main content and footer */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Take up all available space */
+}
+
+/* Footer styling */
+footer {
+    background-color: #00246B; /* Change as needed */
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* Push footer to the bottom */
+}
+
+/* Ensure the main content takes up the remaining space */
+.container {
+    flex: 1; /* Ensure it grows to fill the remaining space */
+}
+
+/* Container for Each Image */
+.property-image-container {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Show a pointer cursor to indicate that the image can be clicked */
+}
+
+.property-image-container img {
+    width: 100%; /* Ensure the image fits its container */
+    height: auto; /* Maintain aspect ratio */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Lightbox Styles */
+#image-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Ensure the lightbox is on top of other content */
+}
+
+#modal-image {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+}
+
+#caption {
+    color: #fff;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2em;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Navigation buttons */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    font-size: 2em;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+#prev-btn {
+    left: 10px;
+}
+
+#next-btn {
+    right: 10px;
+}
+
+/* Base styles for property list page */
+.property-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+
+.property-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center; /* Center content within each property card */
+    background-color: #f9f9f9;
+}
+
+.property-image {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #00246B;
+    border-color: #00246B;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #001a4d;
+    border-color: #001a4d;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure input fields are responsive */
+.form-control {
+    width: 100%; /* Full width for input fields */
+    box-sizing: border-box; /* Include padding and border in the element’s total width and height */
+}

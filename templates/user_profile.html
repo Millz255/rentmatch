@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 position-relative">
+    <!-- Profile Photo at the top right corner below the navbar -->
+    <div class="position-absolute" style="top: 10px; right: 10px;">
+        {% if user_profile.profile_photo %}
+            <img src="{{ user_profile.profile_photo.url }}" alt="Profile Photo" class="img-thumbnail rounded-circle" style="width: 100px; height: 100px;">
+        {% else %}
+            <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Photo" class="img-thumbnail rounded-circle" style="width: 100px; height: 100px;">
+        {% endif %}
+    </div>
+
+    <!-- Profile Header -->
+    <h1 class="text-center">User Profile</h1>
+
+    <!-- Profile Form -->
+    <div class="form-container p-4 shadow-sm rounded bg-light mt-5">
+        <form method="post" enctype="multipart/form-data" id="profileForm">
+            {% csrf_token %}
+
+            <!-- Display last updated date and update button restriction -->
+            <div class="alert alert-info">
+                Last updated: {{ user_profile.last_updated|date:"F d, Y" }}<br>
+                {% if can_update %}
+                    You can update your profile.
+                {% else %}
+                    You can only update your profile once a month.
+                {% endif %}
+            </div>
+
+            <!-- Profile Photo Upload -->
+            <div class="form-group">
+                <label for="id_profile_photo">Change Profile Photo</label>
+                <input type="file" name="profile_photo" id="id_profile_photo" class="form-control-file">
+            </div>
+
+            <!-- Personal Information Fields -->
+            <!-- Repeat the form fields as needed -->
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary btn-block" {% if not can_update %}disabled{% endif %}>Update Profile</button>
+        </form>
+    </div>
+
+    <!-- Properties Section -->
+    <h2 class="mt-5">My Properties</h2>
+    <div class="property-list mt-3" id="propertyList">
+        {% for property in user_properties %}
+            <div class="property-card card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">{{ property.title }}</h3>
+                    {% if property.images.first %}
+                        <img src="{{ property.images.first.url }}" alt="Property Thumbnail" class="img-thumbnail mb-3" style="max-width: 150px;">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    <p class="card-text">{{ property.description|truncatewords:20 }}</p>
+                    <a href="{% url 'property_detail' property.id %}" class="btn btn-info">View More</a>
+                    <a href="{% url 'edit_property' property.id %}" class="btn btn-secondary ml-2">Edit</a>
+                    <a href="{% url 'delete_property' property.id %}" class="btn btn-danger ml-2">Delete</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No properties listed.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Profile Form Styling
+    let profileForm = document.getElementById('profileForm');
+    profileForm.style.border = '2px solid #cadcfc';
+    profileForm.style.borderRadius = '10px';
+    profileForm.style.padding = '20px';
+
+    // Property Card Styling
+    let propertyCards = document.querySelectorAll('.property-card');
+    propertyCards.forEach(function(card) {
+        card.style.marginBottom = '20px';
+        card.style.padding = '15px';
+        card.style.border = '1px solid #ddd';
+        card.style.borderRadius = '8px';
+        card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+    });
+});
+</script>
+{% endblock %}

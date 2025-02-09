@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Profile Details Section -->
+        <div id="profile-section" class="col-md-4 mb-4">
+            <h1>{{ profile.user.username }}'s Profile</h1>
+            <!-- Profile Image -->
+            <div id="profile-photo-container" class="mb-3 text-center">
+                {% if profile.profile_photo %}
+                    <img src="{{ profile.profile_photo.url }}" alt="Profile Photo" class="img-thumbnail rounded-circle profile-photo" style="width: 100px; height: 100px;">
+                {% else %}
+                    <p>No profile photo uploaded.</p>
+                {% endif %}
+            </div>
+            <!-- Profile Details -->
+            <h2>Profile Details</h2>
+            <p><strong>First Name:</strong> {{ profile.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ profile.last_name }}</p>
+            <p><strong>Email:</strong> {{ profile.email }}</p>
+            <p><strong>Phone Number:</strong> {{ profile.phone }}</p>
+            <p><strong>Address:</strong> {{ profile.address }}</p>
+            <p><strong>Country:</strong> {{ profile.country }}</p>
+            <p><strong>City/Town:</strong> {{ profile.city }}</p>
+            <p><strong>Date of Birth:</strong> {{ profile.dob }}</p>
+            <!-- Edit Profile Link -->
+            <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+        </div>
+
+
+
+
+        <!-- Properties Section -->
+        <div id="properties-section" class="col-md-8">
+            <h2>Listed Properties</h2>
+            {% if user_properties %}
+                <div class="row">
+                    {% for property in user_properties %}
+                        <div class="col-md-6 mb-4">
+                            <div class="property-card">
+                                <div class="set-thumbnail">
+                                    {% if property.images_list.first %}
+                        <img src="{{ property.images_list.first.image.url }}" alt="{{ property.title }}" class="property-image"/>
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+
+                                </div>
+                                <div class="property-details mt-2">
+                                    <h3>{{ property.title }}</h3>
+                                    <p>{{ property.description }}</p>
+                                    <p>Price: {{ property.price }}</p>
+                                    <a href="{% url 'property_detail' property.pk %}" class="btn btn-info">View Details</a>
+                                    <a href="{% url 'edit_property' property.pk %}" class="btn btn-warning">Edit</a>
+                                    <a href="{% url 'delete_property' property.pk %}" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>You have no listed properties.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+<div id="messages-section" class="col-md-12 mt-4">
+    <h2>Messages</h2>
+    {% if messages %}
+        <ul class="list-group">
+            {% for message in messages %}
+                <li class="list-group-item">
+                    <strong>To:</strong> {{ message.receiver.username }}<br>
+                    <strong>Message:</strong> {{ message.content }}<br>
+                    <small>Sent on: {{ message.timestamp }}</small><br>
+                    <small>Status:
+                        {% if message.read %}
+                            <span class="text-success">Read</span>
+                        {% else %}
+                            <span class="text-danger">Unread</span>
+                        {% endif %}
+                    </small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No messages yet.</p>
+    {% endif %}
+</div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Profile Section Styling
+        const profileSection = document.getElementById('profile-section');
+        profileSection.style.border = '1px solid #ddd';
+        profileSection.style.padding = '20px';
+        profileSection.style.borderRadius = '5px';
+        profileSection.style.marginRight = '0px';
+        profileSection.style.backgroundColor = '#f9f9f9';
+
+        // Properties Section Styling
+        const propertiesSection = document.getElementById('properties-section');
+        propertiesSection.style.border = '1px solid #ddd';
+        propertiesSection.style.padding = '20px';
+        propertiesSection.style.borderRadius = '5px';
+        propertiesSection.style.backgroundColor = '#f9f9f9';
+
+        // Function to set thumbnail image and adjust size
+         function setThumbnail() {
+            const images = document.querySelectorAll('.property-image');
+
+                        images.forEach(image => {
+                            if (image.naturalHeight > 200) { // If image is too tall
+                                image.style.maxHeight = '200px';
+                                image.style.objectFit = 'cover'; // Ensure the image covers the container
+                            } else {
+                                image.style.maxHeight = ''; // Remove the style if image is small enough
+                            }
+                        });
+                    }
+
+                    // Initialize thumbnail settings
+                    setThumbnail();
+
+        // Grid layout for properties
+        const propertyCards = document.querySelectorAll('.property-card');
+        propertyCards.forEach(card => {
+            card.style.border = '1px solid #ddd';
+            card.style.borderRadius = '5px';
+            card.style.padding = '10px';
+            card.style.backgroundColor = '#fff';
+        });
+    });
+</script>
+{% endblock %}
